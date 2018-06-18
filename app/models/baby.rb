@@ -3,4 +3,9 @@ class Baby < ApplicationRecord
 	has_many :events
 	has_many :baby_users
 	has_many :care_takers, through: :baby_users
+
+	validates_associated :mother
+	validates :name, :sex, :birth, presence: true
+
+
 end

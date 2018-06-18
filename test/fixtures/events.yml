@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  baby_id: 1
+  user_id: 1
+  event_type: MyString
+  amount_1: 1
+  amount_2: 1
+  notes: MyString
+
+two:
+  baby_id: 1
+  user_id: 1
+  event_type: MyString
+  amount_1: 1
+  amount_2: 1
+  notes: MyString

@@ -1,0 +1,2 @@
+class BabyUsersController < ApplicationController
+end

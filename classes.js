@@ -52,6 +52,24 @@ class Baby {
 				</form>`
 		return str
 	}
+
+	availableBottles() {
+		let bottles = this.events.filter((event)=>event.type === 'Bottle')
+		// debugger
+		let bottleFeedings = this.events.filter((event)=>event.type === 'BottleFeeding')
+		if (bottleFeedings.length === 0) {
+			return bottles
+		} else {
+			let avBottles = bottles.filter((bottle)=>{ 
+				let drunk = bottleFeedings.find((feeding)=> {
+				// debugger
+					return (feeding.bottle === bottle.id)
+				})
+				return !Boolean(drunk)
+			})
+			return avBottles
+		}
+	}
 }
 
 class Event {

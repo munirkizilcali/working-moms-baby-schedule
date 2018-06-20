@@ -50,7 +50,9 @@ function changeFields(selectField) {
 
 	let timeInput = `<input type='datetime-local' value='${moment().format('YYYY-MM-DDTHH:mm')}' name='event_time' class='event_time'><br>`
 	let submitInput = `<input data-baby-id='${form.dataset.id}' data-user-id='${currentUser.id}' class='submit' type='submit'>`
-	let bottleInput = `<input type='hidden' name='bottle_id' class='bottle_id' value='000'>`
+	let bottleInput = ''
+	let baby = currentUser.babies.find((baby)=>{return baby.id === parseInt(form.dataset.id)})
+	baby.availableBottles().forEach((bottle)=>{return bottleInput += `<input type="radio" id="${bottle.id}" name="bottle_id" class='notes' value='${bottle.id}'/><label for='${bottle.id}'>${bottle.amount1} oz - ${moment(bottle.eventTime).fromNow()}</label><br>`})
 	changeDiv.innerHTML=''
 	// form.removeChild(form.querySelector('input.event_time'))
 	// form.removeChild(form.querySelector('input.amount_1'))
@@ -64,14 +66,19 @@ function changeFields(selectField) {
 				   ${submitInput}`
 			break;
 		case 'Bottle':
-			str = `${timeInput}
+			str = `<input type='number' name='amount_1' class='amount_1' placeholder='Amount of milk (oz)'><br>
+				   ${timeInput}
 				   ${submitInput}
-				   ${bottleInput}`
+				   `
 			break;
 		case 'BottleFeeding':
-			str = `<input type='number' name='amount_1' class='amount_1' placeholder='Amount 1'><br>
+			if (bottleInput !== '') {
+			str = `${bottleInput}
 				   ${timeInput}
 				   ${submitInput}`
+			} else {
+			str = 'No available pumped milk.'
+			}
 			break;
 		case 'BreastFeeding':
 			str = `<input type='number' name='amount_1' class='amount_1' placeholder='Duration (minutes)'><br>
@@ -152,7 +159,7 @@ function getEventFormData(form) {
 	let type = form.querySelector('.type') ? form.querySelector('.type').value : null
 	let baby_id = form.querySelector('.baby_id') ? form.querySelector('.baby_id').value : null
 	let user_id = form.querySelector('.user_id') ? form.querySelector('.user_id').value : null
-	let bottle_id = form.querySelector('.bottle_id') ? form.querySelector('.bottle_id').value : null
+	let bottle_id = form.bottle_id ? form.bottle_id.value : null
 	let event_time = form.querySelector('.event_time') ? moment(form.querySelector('.event_time').value).format() : null
 	let notes = form.notes ? form.notes.value : null
 	let amount_1 = form.querySelector('.amount_1') ? form.querySelector('.amount_1').value : null

@@ -7,20 +7,22 @@
 	<h1 class='greeting'></h1>
 	<p>Babies under your care are</p>
 	<ul class='baby-list'></ul>
-<div><form class='new-baby-form'>
-	<p>
+<div><h3>New Baby</h3><form class='new-baby-form'>
+	
 	<label for='name'>Baby Name</label>
-	<input type="text" name="name" class='name'></p>
-	<p>
+	<input type="text" name="name" class='name'><br>
+	
 	<label for='birth'>Birth Day</label>
-	<input type="date" name="birth" class='birth'></p>
+	<input type="date" name="birth" class='birth'><br>
 	<select name="sex" class='sex'>
-		<option value="">Select your option</option>
+		<option value="">Select gender</option>
 		<option value='m'>Baby Boy</option>
 		<option value='f'>Baby Girl</option>
-	</select>
+	</select><br>
 	<input type="submit" name="submit">
 </form></div>
+<script type="text/javascript" src='moment.js'></script>
+<script type="text/javascript" src='classes.js'></script>
 <script type="text/javascript" src='index.js'></script>
 </body>
 </html>

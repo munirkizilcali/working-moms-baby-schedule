@@ -15,13 +15,18 @@ class Api::V1::EventsController < ApplicationController
 
 	def create
 		@event = Event.new(event_params)
-		byebug
 		if @event.valid?
 			@event.save
 			render json: @event
 		else
 			render json: {status:'error', code:4000}
 		end
+	end
+
+	def destroy
+
+		@event = Event.find(params[:id])
+		@event.destroy
 	end
 
 	private

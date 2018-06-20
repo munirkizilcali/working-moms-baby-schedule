@@ -23,6 +23,11 @@ class Api::V1::BabiesController < ApplicationController
 		end
 	end
 
+	def destroy
+		@baby = Baby.find(params[:id])
+		@baby.destroy
+	end
+
 	private
 
 	def baby_params

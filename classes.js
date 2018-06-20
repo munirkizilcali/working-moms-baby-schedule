@@ -9,6 +9,7 @@ class User {
 		this.name = name
 		this.email = email
 		this.babies = []
+		users.push(this)
 	}
 
 	renderBabyList() {

@@ -8,36 +8,45 @@ const babyForm = document.querySelector('.new-baby-form')
 const eventTypes = ['BedTime', 'Bottle', 'BottleFeeding', 'BreastFeeding', 'ChangeDiaper', 'FormulaFeeding', 'Scale', 'SolidFoodFeeding', 'Temperature', 'WakeUpTime']
 let currentUser = 0
 function userData() {
-	return fetch(`${url}/${userId}`)
+	return fetch(`${url}`)
 		.then(resp=>resp.json())
 }
 
 function screenRefresh() {
+	currentUser = 0
+	users = []
+	babies = []
+	events = []
 	return userData()
 	.then((json) => {
-		createUserInstance(json);
+		return createUserInstances(json)})
+	.then(()=>{
+		currentUser = users[0]
 		userGreeting.innerHTML = `Hello ${currentUser.name}`
-		babyList.innerHTML = currentUser.renderBabyList()
-	}).then(()=>addNewBabyFormListener())
+		babyList.innerHTML = currentUser.renderBabyList()})
+	.then(()=>addNewBabyFormListener())
 	.then(()=>addEventFormListeners())
 }
 
-function createUserInstance(json) {
-	currentUser = new User(json.id, json.name, json.email)
-	createBabyInstances(json, currentUser)
+function createUserInstances(json) {
+	return json.forEach((user)=>{
+		let userIns = new User(user.id, user.name, user.email)
+		createBabyInstances(user, userIns)
+	})
+	
 }
 
 function createBabyInstances(json, user) {
-	json.babies.forEach(baby=>{
-		let newBaby = new Baby(baby.id, baby.name, baby.sex, baby.birth, baby.mother_id, currentUser)
+	return json.babies.forEach(baby=>{
+		let newBaby = new Baby(baby.id, baby.name, baby.sex, baby.birth, baby.mother_id, user)
 		createEventInstances(json, newBaby)
 	})
 }
 
 function createEventInstances(json,baby) {
-	json.events.forEach(event=>{
+	return json.events.forEach(event=>{
 		if (baby.id === event.baby_id){
-			let newEvent = new Event(event.id, baby, currentUser, event.amount_1, event.amount_2, event.notes, event.type, event.bottle_id, event.event_time)
+			let newEvent = new Event(event.id, baby, event.user_id, event.amount_1, event.amount_2, event.notes, event.type, event.bottle_id, event.event_time)
 		}
 	})
 }
@@ -192,7 +201,7 @@ function addEventFormListeners() {
 				}
 			}
 			if (filled === true) {
-				createBabyEvent(input).then(()=>screenRefresh())
+				createBabyEvent(input).then(()=>{ screenRefresh()})
 			} else {
 				alert('Missing Fields in the new event form!')
 			}

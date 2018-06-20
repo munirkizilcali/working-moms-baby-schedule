@@ -13,5 +13,22 @@ class Api::V1::EventsController < ApplicationController
 		render json: @event
 	end
 
+	def create
+		@event = Event.new(event_params)
+		byebug
+		if @event.valid?
+			@event.save
+			render json: @event
+		else
+			render json: {status:'error', code:4000}
+		end
+	end
+
+	private
+
+	def event_params
+		params.require(:event).permit(:baby_id, :user_id, :amount_1, :amount_2, :notes, :created_at, :updated_at, :type, :bottle_id, :event_time)
+	end
+
 
 end

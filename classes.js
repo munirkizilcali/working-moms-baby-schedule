@@ -9,16 +9,25 @@ class User {
 		this.name = name
 		this.email = email
 		this.babies = []
+		this.children = []
 		users.push(this)
 	}
 
 	renderBabyList() {
-	let strng = ''
-	this.babies.forEach((baby)=>{
-			strng+=`<li>${baby.name} - <button name='delete-baby' class='delete-baby' data-baby-id='${baby.id}' onclick='deleteBaby(this)'>Delete Baby</button>${baby.renderEvents()}</li>`
-	})
-	return strng
-}
+		let strng = ''
+		this.babies.forEach((baby)=>{
+				strng+=`<li>${baby.name} - <button name='delete-baby' class='delete-baby' data-baby-id='${baby.id}' onclick='deleteBaby(this)'>Delete Baby</button>${baby.renderEvents()}</li>`
+		})
+		return strng
+	}
+
+	renderChildrenList() {
+		let strng = ''
+		this.children.forEach((baby)=>{
+			strng += `<li>${baby.name} - <button name='delete-baby' class='delete-baby' data-baby-id='${baby.id}' onclick='deleteBaby(this)'>Delete Baby</button>${baby.renderCaretakers()}</li>`
+		})
+		return strng
+	}
 }
 
 class Baby {
@@ -30,6 +39,10 @@ class Baby {
 		this.mother = mother
 		this.events = []
 		user.babies.push(this)
+		if (this.mother === user.id) {
+			user.children.push(this)
+		}
+		this.careTakerIds = []
 	}
 
 	renderEvents() {
@@ -54,6 +67,19 @@ class Baby {
 		return str
 	}
 
+	renderCareTakerForm() {
+		let str = ''
+		str += `<form class='care-taker-form' data-baby-id='${this.id}'>`
+		str += `<select name='user_id' class='user_id'>
+				<option value=''>Add a new caregiver</option>`
+		users.forEach(user=>str+= `<option value='${user.id}'>${user.name}</option>`)
+		str += `</select>`
+		str += `<input type='hidden' name='baby_id' class='baby_id' value='${this.id}'>`
+		str += `<input type='submit' name='submit' value='Add'>
+				</form>`
+		return str
+	}
+
 	availableBottles() {
 		let bottles = this.events.filter((event)=>event.type === 'Bottle')
 		// debugger
@@ -70,6 +96,19 @@ class Baby {
 			})
 			return avBottles
 		}
+	}
+
+	renderCaretakers() {
+		let str = '<ul>'
+		this.careTakerIds.forEach((userId)=>{ 
+			let careTaker = users.find((user)=>user.id === userId)
+			if (careTaker) {
+				str += `<li>${careTaker.name} <button data-caretaker-id='${careTaker.id}' data-baby-id= '${this.id}' onClick='deleteBabyUser(this)'>X</button></li>`
+			}
+		})
+		str+= `<li>${this.renderCareTakerForm()}</li>`
+		str+= '</ul>'
+		return str
 	}
 }
 

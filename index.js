@@ -1,6 +1,7 @@
 const url = 'http://localhost:3000/api/v1/users'
 const babyUrl = 'http://localhost:3000/api/v1/babies'
 const eventUrl = 'http://localhost:3000/api/v1/events'
+const babyUserUrl = 'http://localhost:3000/api/v1/baby_users'
 const userGreeting = document.querySelector('.greeting')
 const babyList = document.querySelector('.baby-list')
 
@@ -46,8 +47,10 @@ function screenRefresh() {
 		document.querySelector('.user-switch-div').innerHTML = userSelector(currentUser)
 		userGreeting.innerHTML = `Hello ${currentUser.name}`
 		babyList.innerHTML = currentUser.renderBabyList()
+		document.querySelector('.children-list').innerHTML = currentUser.renderChildrenList()
 		document.querySelector('.new-baby-div').innerHTML = `
-			<h3>New Baby</h3><form class='new-baby-form'>
+			<form class='new-baby-form'>
+			<h4>New Baby</h4>
 				<label for='name'>Baby Name</label>
 				<input type="text" name="name" class='name'><br>
 				<label for='birth'>Birth Day</label>
@@ -62,6 +65,7 @@ function screenRefresh() {
 	})
 	.then(()=>addNewBabyFormListener())
 	.then(()=>addEventFormListeners())
+	.then(()=>addCaretakerFormListeners())
 }
 
 function createUserInstances(json) {
@@ -75,6 +79,7 @@ function createUserInstances(json) {
 function createBabyInstances(json, user) {
 	return json.babies.forEach(baby=>{
 		let newBaby = new Baby(baby.id, baby.name, baby.sex, baby.birth, baby.mother_id, user)
+		json.baby_users.forEach((babyUser)=> babyUser.baby_id === newBaby.id ? newBaby.careTakerIds.push(babyUser.care_taker_id) : '')
 		createEventInstances(json, newBaby)
 	})
 }
@@ -214,6 +219,25 @@ function getEventFormData(form) {
 	return {type, baby_id, user_id, bottle_id, event_time, notes, amount_1, amount_2}
 }
 
+function getCareTakerFormData(form) {
+	let baby_id = form.querySelector('.baby_id') ? form.querySelector('.baby_id').value : null
+	let care_taker_id = form.querySelector('.user_id') ? form.querySelector('.user_id').value : null
+
+	return {baby_id, care_taker_id}
+}
+
+function addNewCareTaker(input) {
+	console.log(input)
+	return fetch(babyUserUrl, {
+		method: 'post',
+		headers: {
+			'content-type':'application/json',
+			'accept':'application/json'
+		},
+		body: JSON.stringify(input)
+	}).then(()=>screenRefresh())
+}
+
 function createBabyEvent(input) {
 	console.log(input)
 	return fetch(eventUrl, {
@@ -246,6 +270,26 @@ function addEventFormListeners() {
 	})
 }
 
+function addCaretakerFormListeners() {
+	document.querySelectorAll('.care-taker-form').forEach(form=>{
+		form.addEventListener('submit', function(e) {
+			e.preventDefault();
+			let input = getCareTakerFormData(form)
+			let filled = true
+			for(let item in input) {
+				if (input[item] === ''){
+					filled = false
+				}
+			}
+			if (filled === true) {
+				addNewCareTaker(input).then(()=>{ screenRefresh()})
+			} else {
+				alert('Missing Fields in the new caretaker form!')
+			}
+		})
+	})
+}
+
 function getBabyFormData() {
 	let name = babyForm().querySelector('input.name').value
 	let sex = babyForm().querySelector('select.sex').value
@@ -260,6 +304,17 @@ function deleteEvent(button) {
 	}).then(()=>screenRefresh())
 }
 
+function deleteBabyUser(button) {
+	fetch(babyUserUrl)
+		.then((resp)=>resp.json())
+		.then((json)=>{
+			let jsonItem = json.find((baby_user)=>baby_user.care_taker_id === button.dataset.caretakerId && baby_user.baby_id === button.dataset.babyId)
+			return jsonItem.id
+		}).then((id)=>fetch(babyUserUrl + `/${id}`, {
+		method: 'delete'
+	})).then(()=>screenRefresh())
+}
+
 function deleteBaby(button) {
 	let confirmation = confirm('Are you sure to delete baby?')
 	if (confirmation === true) {
@@ -268,6 +323,7 @@ function deleteBaby(button) {
 		}).then(()=>screenRefresh())
 	}  
 }
+
 
 document.addEventListener('DOMContentLoaded', function() {
 	screenRefresh()

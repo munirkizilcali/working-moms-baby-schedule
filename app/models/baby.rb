@@ -1,7 +1,7 @@
 class Baby < ApplicationRecord
 	belongs_to :mother, class_name: 'User'
-	has_many :events
-	has_many :baby_users
+	has_many :events, dependent: :destroy
+	has_many :baby_users, dependent: :destroy
 	has_many :care_takers, through: :baby_users
 	after_create :add_mother_to_care_takers
 

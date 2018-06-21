@@ -2,6 +2,30 @@ let users = []
 let babies = []
 let events = []
 
+let eventGroups = [
+	{
+		id: 1,
+		content: 'Feeding',
+		
+		// Optional: a field 'className', 'style', 'order', [properties]
+	},
+	{
+		id: 2,
+		content: 'Sleep'
+		// Optional: a field 'className', 'style', 'order', [properties]
+	},
+	{
+		id: 3,
+		content: 'Diapers'
+		// Optional: a field 'className', 'style', 'order', [properties]
+	},
+	{
+		id: 4,
+		content: 'Health'
+		// Optional: a field 'className', 'style', 'order', [properties]
+	}
+]
+
 
 class User {
 	constructor(id, name, email) {
@@ -16,7 +40,9 @@ class User {
 	renderBabyList() {
 		let strng = ''
 		this.babies.forEach((baby)=>{
-				strng+=`<li>${baby.name} - <button name='delete-baby' class='delete-baby' data-baby-id='${baby.id}' onclick='deleteBaby(this)'>Delete Baby</button>${baby.renderEvents()}</li>`
+				strng+=`<li>${baby.name} - <button name='delete-baby' class='delete-baby' data-baby-id='${baby.id}' onclick='deleteBaby(this)'>Delete Baby</button>
+						<br><div class='baby-event-timeline-${baby.id}'></div>
+						${baby.renderEvents()}</li>`
 		})
 		return strng
 	}
@@ -43,6 +69,7 @@ class Baby {
 			user.children.push(this)
 		}
 		this.careTakerIds = []
+		this.timeline = ''
 	}
 
 	renderEvents() {
@@ -52,6 +79,42 @@ class Baby {
 		})
 		strng += `<li>${this.renderEventForm()}</li>`
 		return strng + '</ul>'
+	}
+
+	renderEventsForVis() {
+		let visObject = []
+		this.events.forEach(event=>{
+			let eventGroup = 0
+			let eventStyle = ''
+			if (event.type === 'BedTime' || event.type ==='WakeUpTime') {
+				eventGroup = 2
+			} else if (event.type === 'Bottle' || event.type ==='BottleFeeding' || event.type ==='BreastFeeding' || event.type ==='FormulaFeeding' || event.type ==='SolidFoodFeeding') {
+				eventGroup = 1
+				eventStyle = "color: #336600; background-color: #99FF99;"
+			} else if (event.type ==='ChangeDiaper') {
+				eventGroup = 3
+				eventStyle = "color: #663300; background-color: #FFB266;"
+			} else {
+				eventGroup = 4
+				eventStyle = "color: red; background-color: pink;"
+			}
+
+			visObject.push({
+			 start: new moment(event.eventTime).format('YYYY-MM-DD HH:mm:ss'), 
+			 content: `${event.type}`,
+			 group: eventGroup,
+			 style: eventStyle
+			})
+		// debugger
+		})
+		var items = new vis.DataSet(visObject)
+
+		return items
+	}
+	renderTimeline() {
+		// debugger
+		let containerClass = `.baby-event-timeline-${this.id}`
+		this.timeline = new vis.Timeline(document.querySelector(containerClass), this.renderEventsForVis(), eventGroups, {start: moment().subtract(23, 'hours').format(), end: moment().add(1, 'hours').format()});
 	}
 
 	renderEventForm() {

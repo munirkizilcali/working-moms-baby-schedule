@@ -18,14 +18,15 @@ function userData() {
 }
 
 function userSelector(currentUser) {
-	let str = `<select name="currentUser" class='current-user-select' onchange='changeCurrentUser(this)'>`
-	if (currentUser !== 0) {
-		users.forEach((user)=>str += `<option value=${user.id} ${user.id === currentUser.id ? 'selected' : ''}>${user.name}</option>`)				
-	} else {
-		users.forEach((user)=>str += `<option value=${user.id} ${user.id === currentUser.id ? 'selected' : ''}>${user.name}</option>`)
-	}
-	str += `</select>`
-	return str
+	// let str = `<select name="currentUser" class='current-user-select' onchange='changeCurrentUser(this)'>`
+	// if (currentUser !== 0) {
+	// 	users.forEach((user)=>str += `<option value=${user.id} ${user.id === currentUser.id ? 'selected' : ''}>${user.name}</option>`)				
+	// } else {
+	// 	users.forEach((user)=>str += `<option value=${user.id} ${user.id === currentUser.id ? 'selected' : ''}>${user.name}</option>`)
+	// }
+	// str += `</select>`
+	// return str
+	return ''
 }
 
 function changeCurrentUser(selector) {
@@ -65,7 +66,11 @@ function screenRefresh() {
 	})
 	.then(()=>addNewBabyFormListener())
 	.then(()=>addEventFormListeners())
-	.then(()=>addCaretakerFormListeners())
+	.then(()=>{
+		currentUser.babies.forEach(baby=>{let timeline = baby.renderTimeline()})
+		// redrawTimelines()
+	})
+	// .then(()=>addCaretakerFormListeners())
 }
 
 function createUserInstances(json) {
@@ -74,6 +79,10 @@ function createUserInstances(json) {
 		createBabyInstances(user, userIns)
 	})
 	
+}
+
+function redrawTimelines() {
+	document.querySelectorAll('.vis-timeline').forEach(timeline=>timeline.style.visibility='visible')
 }
 
 function createBabyInstances(json, user) {
@@ -226,17 +235,17 @@ function getCareTakerFormData(form) {
 	return {baby_id, care_taker_id}
 }
 
-function addNewCareTaker(input) {
-	console.log(input)
-	return fetch(babyUserUrl, {
-		method: 'post',
-		headers: {
-			'content-type':'application/json',
-			'accept':'application/json'
-		},
-		body: JSON.stringify(input)
-	}).then(()=>screenRefresh())
-}
+// function addNewCareTaker(input) {
+// 	console.log(input)
+// 	return fetch(babyUserUrl, {
+// 		method: 'post',
+// 		headers: {
+// 			'content-type':'application/json',
+// 			'accept':'application/json'
+// 		},
+// 		body: JSON.stringify(input)
+// 	}).then(()=>screenRefresh())
+// }
 
 function createBabyEvent(input) {
 	console.log(input)
@@ -270,25 +279,25 @@ function addEventFormListeners() {
 	})
 }
 
-function addCaretakerFormListeners() {
-	document.querySelectorAll('.care-taker-form').forEach(form=>{
-		form.addEventListener('submit', function(e) {
-			e.preventDefault();
-			let input = getCareTakerFormData(form)
-			let filled = true
-			for(let item in input) {
-				if (input[item] === ''){
-					filled = false
-				}
-			}
-			if (filled === true) {
-				addNewCareTaker(input).then(()=>{ screenRefresh()})
-			} else {
-				alert('Missing Fields in the new caretaker form!')
-			}
-		})
-	})
-}
+// function addCaretakerFormListeners() {
+// 	document.querySelectorAll('.care-taker-form').forEach(form=>{
+// 		form.addEventListener('submit', function(e) {
+// 			e.preventDefault();
+// 			let input = getCareTakerFormData(form)
+// 			let filled = true
+// 			for(let item in input) {
+// 				if (input[item] === ''){
+// 					filled = false
+// 				}
+// 			}
+// 			if (filled === true) {
+// 				addNewCareTaker(input).then(()=>{ screenRefresh()})
+// 			} else {
+// 				alert('Missing Fields in the new caretaker form!')
+// 			}
+// 		})
+// 	})
+// }
 
 function getBabyFormData() {
 	let name = babyForm().querySelector('input.name').value
@@ -304,16 +313,16 @@ function deleteEvent(button) {
 	}).then(()=>screenRefresh())
 }
 
-function deleteBabyUser(button) {
-	fetch(babyUserUrl)
-		.then((resp)=>resp.json())
-		.then((json)=>{
-			let jsonItem = json.find((baby_user)=>baby_user.care_taker_id === button.dataset.caretakerId && baby_user.baby_id === button.dataset.babyId)
-			return jsonItem.id
-		}).then((id)=>fetch(babyUserUrl + `/${id}`, {
-		method: 'delete'
-	})).then(()=>screenRefresh())
-}
+// function deleteBabyUser(button) {
+// 	fetch(babyUserUrl)
+// 		.then((resp)=>resp.json())
+// 		.then((json)=>{
+// 			let jsonItem = json.find((baby_user)=>baby_user.care_taker_id === button.dataset.caretakerId && baby_user.baby_id === button.dataset.babyId)
+// 			return jsonItem.id
+// 		}).then((id)=>fetch(babyUserUrl + `/${id}`, {
+// 		method: 'delete'
+// 	})).then(()=>screenRefresh())
+// }
 
 function deleteBaby(button) {
 	let confirmation = confirm('Are you sure to delete baby?')

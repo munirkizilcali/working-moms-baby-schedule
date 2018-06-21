@@ -4,4 +4,5 @@ class UserSerializer < ActiveModel::Serializer
   has_many :events, through: :babies
   has_many :care_takers, through: :babies
   has_many :baby_users
+  has_many :children
 end

@@ -1,15 +1,36 @@
 const url = 'http://localhost:3000/api/v1/users'
 const babyUrl = 'http://localhost:3000/api/v1/babies'
 const eventUrl = 'http://localhost:3000/api/v1/events'
-const userId = 1
 const userGreeting = document.querySelector('.greeting')
 const babyList = document.querySelector('.baby-list')
-const babyForm = document.querySelector('.new-baby-form')
+
 const eventTypes = ['BedTime', 'Bottle', 'BottleFeeding', 'BreastFeeding', 'ChangeDiaper', 'FormulaFeeding', 'Scale', 'SolidFoodFeeding', 'Temperature', 'WakeUpTime']
 let currentUser = 0
+
+function babyForm() {
+	return document.querySelector('.new-baby-form')	
+} 
+
 function userData() {
 	return fetch(`${url}`)
 		.then(resp=>resp.json())
+}
+
+function userSelector(currentUser) {
+	let str = `<select name="currentUser" class='current-user-select' onchange='changeCurrentUser(this)'>`
+	if (currentUser !== 0) {
+		users.forEach((user)=>str += `<option value=${user.id} ${user.id === currentUser.id ? 'selected' : ''}>${user.name}</option>`)				
+	} else {
+		users.forEach((user)=>str += `<option value=${user.id} ${user.id === currentUser.id ? 'selected' : ''}>${user.name}</option>`)
+	}
+	str += `</select>`
+	return str
+}
+
+function changeCurrentUser(selector) {
+	currentUser = users.find((user)=>user.id === parseInt(selector.value))
+	document.querySelector('.user-switch-div').dataset.userId = currentUser.id
+	screenRefresh()
 }
 
 function screenRefresh() {
@@ -21,9 +42,24 @@ function screenRefresh() {
 	.then((json) => {
 		return createUserInstances(json)})
 	.then(()=>{
-		currentUser = users[0]
+		currentUser = users.find((user)=>user.id === parseInt(document.querySelector('.user-switch-div').dataset.userId))
+		document.querySelector('.user-switch-div').innerHTML = userSelector(currentUser)
 		userGreeting.innerHTML = `Hello ${currentUser.name}`
-		babyList.innerHTML = currentUser.renderBabyList()})
+		babyList.innerHTML = currentUser.renderBabyList()
+		document.querySelector('.new-baby-div').innerHTML = `
+			<h3>New Baby</h3><form class='new-baby-form'>
+				<label for='name'>Baby Name</label>
+				<input type="text" name="name" class='name'><br>
+				<label for='birth'>Birth Day</label>
+				<input type="date" name="birth" class='birth'><br>
+				<select name="sex" class='sex'>
+					<option value="">Select gender</option>
+					<option value='m'>Baby Boy</option>
+					<option value='f'>Baby Girl</option>
+				</select><br>
+				<input type="submit" name="submit">
+			</form>`
+	})
 	.then(()=>addNewBabyFormListener())
 	.then(()=>addEventFormListeners())
 }
@@ -143,10 +179,11 @@ function addNewBaby() {
 		},
 		body: JSON.stringify(getBabyFormData())
 	}).then(resp=>resp.json())
+	.then(()=>{screenRefresh()})
 }
 
 function addNewBabyFormListener() {
-	babyForm.addEventListener('submit', function(e) {
+	babyForm().addEventListener('submit', function(e) {
 		e.preventDefault();
 		let input = getBabyFormData()
 		let filled = true
@@ -209,13 +246,11 @@ function addEventFormListeners() {
 	})
 }
 
-
-
 function getBabyFormData() {
-	let name = babyForm.querySelector('input.name').value
-	let sex = babyForm.querySelector('select.sex').value
-	let mother_id = userId
-	let birth = babyForm.querySelector('input.birth').value
+	let name = babyForm().querySelector('input.name').value
+	let sex = babyForm().querySelector('select.sex').value
+	let mother_id = currentUser.id
+	let birth = babyForm().querySelector('input.birth').value
 	return {name, sex, mother_id, birth}
 }
 
@@ -226,9 +261,12 @@ function deleteEvent(button) {
 }
 
 function deleteBaby(button) {
-	fetch(babyUrl + `/${button.dataset.babyId}`, {
-		method: 'delete'
-	}).then(()=>screenRefresh())
+	let confirmation = confirm('Are you sure to delete baby?')
+	if (confirmation === true) {
+		fetch(babyUrl + `/${button.dataset.babyId}`, {
+			method: 'delete'
+		}).then(()=>screenRefresh())
+	}  
 }
 
 document.addEventListener('DOMContentLoaded', function() {

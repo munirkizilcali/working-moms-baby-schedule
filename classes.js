@@ -74,9 +74,9 @@ class Baby {
 
 	renderEvents() {
 		let strng = '<ul>'
-		// this.events.forEach((event)=>{
-		// 	strng +=`<li>${event.type} - ${moment(event.eventTime).calendar()} <button data-event-id='${event.id}' onClick='deleteEvent(this)'>X</button></li>`
-		// })
+		this.events.forEach((event)=>{
+			strng +=`<li>${event.type} - ${moment(event.eventTime).calendar()} <button data-event-id='${event.id}' onClick='deleteEvent(this)'>X</button></li>`
+		})
 		strng += `<li>${this.renderEventForm()}</li>`
 		return strng + '</ul>'
 	}

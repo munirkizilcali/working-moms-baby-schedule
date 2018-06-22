@@ -24,6 +24,75 @@
         <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
     <![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <style type="text/css">
+    .container {
+      max-width: 80%;
+      align-self: 'center';
+    }
+  </style>
+  <style type="text/css">
+	body {
+		background: url("background2.png")repeat-y center center fixed;
+  -webkit-background-size: 100%;
+  -moz-background-size: 100%;
+  -o-background-size: 100%;
+  background-size: 100%;
+			}
+    .vis-timeline {
+      border: 2px solid rgb(24,46,57);
+      border-radius: 20px;
+      /*font-family:  purisa, 'comic sans', cursive;*/
+      font-size: 15pt;
+      background: rgb(203,214,181);
+      box-shadow: 5px 5px 20px rgba(128,128,128, 0.5);
+    }
+
+    .vis-item {
+      border-color: rgb(24,46,57);
+      /*background-color: rgb(62,169,146);*/
+      font-size: 15pt;
+      color: rgb(217,80,64);
+      box-shadow: 5px 5px 20px rgba(128,128,128, 0.5);
+      border-radius: 10px important!;
+    }
+
+    .vis-item,
+    .vis-item.vis-line {
+      border-width: 3px;
+
+    }
+
+    .vis-item.vis-dot {
+      border-width: 10px;
+      border-radius: 10px;
+    }
+
+    .vis-item.vis-selected {
+      border-color: green;
+      background-color: lightgreen;
+    }
+
+    .vis-time-axis .vis-text {
+      color: rgb(24,46,57);
+      padding-top: 10px;
+      padding-left: 10px;
+    }
+
+    .vis-time-axis .vis-text.vis-major {
+      font-weight: bold;
+    }
+
+    .vis-time-axis .vis-grid.vis-minor {
+      border-width: 2px;
+      border-color: rgb(24,46,57);
+    }
+
+    .vis-time-axis .vis-grid.vis-major {
+      border-width: 2px;
+      border-color: rgb(24,46,57);
+    }
+  </style>
 </head>
 <body>
 	<div class="header">
@@ -32,7 +101,7 @@
 	    </div></div>
 
 	
-			<div class='pur-u-3-5'>
+			<div class='container'>
 	<h1 class='greeting'></h1>
 	<h4>Babies under your care are:</h4>
 	<ul class='baby-list'></ul>

@@ -40,9 +40,9 @@ class User {
 	renderBabyList() {
 		let strng = ''
 		this.babies.forEach((baby)=>{
-				strng+=`<li>${baby.name} - <button name='delete-baby' class='delete-baby' data-baby-id='${baby.id}' onclick='deleteBaby(this)'>Delete Baby</button>
-						<br><div class='baby-event-timeline-${baby.id}'></div>
-						${baby.renderEvents()}</li>`
+				strng+=`<li>${baby.name} <button name='delete-baby' class='delete-baby' data-baby-id='${baby.id}' onclick='deleteBaby(this)' class='button-error'>X</button></li>
+						<div class='baby-event-timeline-${baby.id}'></div>
+						<li>${baby.renderEvents()}</li>`
 		})
 		return strng
 	}
@@ -74,9 +74,9 @@ class Baby {
 
 	renderEvents() {
 		let strng = '<ul>'
-		this.events.forEach((event)=>{
-			strng +=`<li>${event.type} - ${moment(event.eventTime).calendar()} <button data-event-id='${event.id}' onClick='deleteEvent(this)'>X</button></li>`
-		})
+		// this.events.forEach((event)=>{
+		// 	strng +=`<li>${event.type} - ${moment(event.eventTime).calendar()} <button data-event-id='${event.id}' onClick='deleteEvent(this)'>X</button></li>`
+		// })
 		strng += `<li>${this.renderEventForm()}</li>`
 		return strng + '</ul>'
 	}

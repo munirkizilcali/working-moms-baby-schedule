@@ -48,7 +48,7 @@ function screenRefresh() {
 		document.querySelector('.user-switch-div').innerHTML = userSelector(currentUser)
 		userGreeting.innerHTML = `Hello ${currentUser.name}`
 		babyList.innerHTML = currentUser.renderBabyList()
-		document.querySelector('.children-list').innerHTML = currentUser.renderChildrenList()
+		// document.querySelector('.children-list').innerHTML = currentUser.renderChildrenList()
 		document.querySelector('.new-baby-div').innerHTML = `
 			<form class='new-baby-form'>
 			<h4>New Baby</h4>

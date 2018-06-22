@@ -4,9 +4,35 @@
 	<title>Working Mother's Baby Tracker</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css" integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w" crossorigin="anonymous">    
+<!--[if lte IE 8]>
+        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css">
+    <![endif]-->
+    <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css">
+    <!--<![endif]-->
+    
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+    
+        <!--[if lte IE 8]>
+            <link rel="stylesheet" href="/combo/1.18.13?/css/layouts/marketing-old-ie.css">
+        <![endif]-->
+        <!--[if gt IE 8]><!-->
+            <link rel="stylesheet" href="https://purecss.io/combo/1.18.13?/css/layouts/marketing.css">
+        <!--<![endif]-->
+    <!--[if lt IE 9]>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
+	<div class="header">
+	    <div class="home-menu pure-menu pure-menu-horizontal">
+	    	  <a class="pure-menu-heading" href="">Working Mother's Baby Schedule</a>
+	    </div></div>
 
+	
+			<div class='pur-u-3-5'>
 	<h1 class='greeting'></h1>
 	<h4>Babies under your care are:</h4>
 	<ul class='baby-list'></ul>
@@ -15,6 +41,10 @@
 <div class='new-baby-div'></div>
 <div><br><b><!-- Change User  --></b><span class='user-switch-div' data-user-id='1'></span> </div>
 <div class='timeline'></div>
+</div>
+
+
+
 <script type="text/javascript" src='moment.js'></script>
 <script type="text/javascript" src='classes.js'></script>
 <script type="text/javascript" src='index.js'></script>

@@ -74,11 +74,40 @@ class Baby {
 
 	renderEvents() {
 		let strng = '<ul>'
-		this.events.forEach((event)=>{
-			strng +=`<li>${event.type} - ${moment(event.eventTime).calendar()} <button data-event-id='${event.id}' onClick='deleteEvent(this)'>X</button></li>`
-		})
+		// this.events.forEach((event)=>{
+		// 	strng +=`<li>${event.type} - ${moment(event.eventTime).calendar()} <button data-event-id='${event.id}' onClick='deleteEvent(this)'>X</button></li>`
+		// })
 		strng += `<li>${this.renderEventForm()}</li>`
 		return strng + '</ul>'
+	}
+
+	sleepEvents() {
+		return this.events.filter((event)=>event.type==='BedTime' || event.type==='WakeUpTime')
+	}
+
+	sleepCycles() {
+		let sleeps = []
+		let eventArray = this.sleepEvents()
+		for(let i = 0; i < eventArray.length; i++){
+			if (eventArray[i].type === 'BedTime') {
+				let startTime = new moment(eventArray[i].eventTime).format('YYYY-MM-DD HH:mm:ss')
+				let j = i+1
+				let endTime = ''
+				if ( j !== eventArray.length ) {
+					endTime = new moment(eventArray[i+1].eventTime).format('YYYY-MM-DD HH:mm:ss')
+				} else {
+					endTime = new moment().format('YYYY-MM-DD HH:mm:ss')
+				}
+				sleeps.push({			 
+				start: startTime,
+				end: endTime,
+				content: `<img src='https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/129/sleeping-face_1f634.png' width="25" height="25"> In Sleep`,
+				group: 2
+				});
+			}
+			
+		}
+		return sleeps
 	}
 
 	renderEventsForVis() {
@@ -86,27 +115,53 @@ class Baby {
 		this.events.forEach(event=>{
 			let eventGroup = 0
 			let eventStyle = ''
+			let eventTime = moment(event.eventTime).format('HH:mm')
+			let eventAmount1 = ''
+			let eventAmount2 = ''
+			let eventContent = ''
+			
+			let eventName = event.type.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); })
 			if (event.type === 'BedTime' || event.type ==='WakeUpTime') {
 				eventGroup = 2
 			} else if (event.type === 'Bottle' || event.type ==='BottleFeeding' || event.type ==='BreastFeeding' || event.type ==='FormulaFeeding' || event.type ==='SolidFoodFeeding') {
+				if (event.type === 'Bottle') {
+					eventContent = `<img src="https://png.icons8.com/color/50/000000/manual-breast-pump.png" width='25' height='25'> Breast Pump: ${event.amount1} oz`
+				} else if (event.type ==='BottleFeeding') {
+					eventContent = `<img src="https://png.icons8.com/color/50/000000/baby-bottle.png" width="25" height="25"> Expressed Milk`
+				} else if (event.type === 'BreastFeeding' ) {
+					eventContent = `<img src="https://emojipedia-us.s3.amazonaws.com/thumbs/120/apple/129/breast-feeding_1f931.png" width="25" height="25"> ${event.amount1} minutes`
+				} else if (event.type ==='FormulaFeeding') {
+					eventContent = `<img src="https://png.icons8.com/color/50/000000/baby-bottle.png" width="25" height="25"> Formula: ${event.amount1} oz`
+				} else {
+					eventContent = `<img src="https://png.icons8.com/color/50/000000/vegan-food.png" width="25" height="25"> ${event.notes}`
+				}
 				eventGroup = 1
 				eventStyle = "color: #336600; background-color: #99FF99;"
 			} else if (event.type ==='ChangeDiaper') {
+				for(let i=0; i < event.amount1; i++) { eventAmount1 += '<img src="https://cdn.shopify.com/s/files/1/1061/1924/products/Poop_Emoji_7b204f05-eec6-4496-91b1-351acc03d2c7_small.png?v=1480481059" width="25" height="25">'}
+				for(let i=0; i < event.amount2; i++) { eventAmount2 += '<img src="https://emojipedia-us.s3.amazonaws.com/thumbs/160/apple/129/splashing-sweat-symbol_1f4a6.png" width="25" height="25">'}
 				eventGroup = 3
 				eventStyle = "color: #663300; background-color: #FFB266;"
+				eventContent = `${eventAmount1} ${eventAmount2}`
 			} else {
 				eventGroup = 4
 				eventStyle = "color: red; background-color: pink;"
+				if (event.type === 'Temperature') {
+					eventContent = `<img src="https://emojipedia-us.s3.amazonaws.com/thumbs/120/google/119/thermometer_1f321.png" width="25" height="25"> ${event.amount1} F`
+				} else if (event.type === 'Scale') {
+					eventContent = `<img src="https://png.icons8.com/color/50/000000/scale.png" width="25" height="25"> ${event.amount1} pounds`
+				}
 			}
-
+			if (eventGroup !== 2){
 			visObject.push({
 			 start: new moment(event.eventTime).format('YYYY-MM-DD HH:mm:ss'), 
-			 content: `${event.type}`,
+			 content: eventContent,
 			 group: eventGroup,
 			 style: eventStyle
-			})
+			})}
 		// debugger
 		})
+		visObject.push(...this.sleepCycles())
 		var items = new vis.DataSet(visObject)
 
 		return items

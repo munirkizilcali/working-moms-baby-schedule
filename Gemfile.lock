@@ -60,6 +60,7 @@ GEM
     ffi (1.9.25)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
+    graphql (1.8.7)
     i18n (1.0.1)
       concurrent-ruby (~> 1.0)
     jsonapi-renderer (0.2.0)
@@ -145,6 +146,7 @@ DEPENDENCIES
   active_model_serializers
   bootsnap (>= 1.1.0)
   byebug
+  graphql
   listen (>= 3.0.5, < 3.2)
   puma (~> 3.11)
   rack-cors
@@ -158,4 +160,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.16.1
+   1.16.3

@@ -1,25 +1,13 @@
-# README
+## Working Moms' Baby Schedule
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Summary
 
-Things you may want to cover:
+Baby schedule tracker for working moms to keep track of their babies’ routines.
 
-* Ruby version
+This project is built as a module 3 project at Flatiron School in Washington D.C.
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
-# working-moms-baby-schedule
+Technologies
+Ruby on Rails 5.2 Backend
+Vanilla JS Frontend
+Vis.Js Library for visual timeline design
+PostgreSQL & SQLite
